@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>e-Bridge - 未踏IT人材発掘・育成事業 応募フォーム管理</title>
+<style>
+:root {
+  --bg: #0a0f0a;
+  --card: #0f1a14;
+  --card-hover: #152820;
+  --border: #1e3a2a;
+  --accent: #00d4aa;
+  --accent2: #00f5c8;
+  --success: #00b894;
+  --warning: #fdcb6e;
+  --danger: #e17055;
+  --text: #dfe6e9;
+  --text-dim: #636e72;
+  --required: #e17055;
+  --optional: #00b894;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: 'Segoe UI', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+.header {
+  background: linear-gradient(135deg, #0a2e1f 0%, #00d4aa 50%, #00f5c8 100%);
+  padding: 40px 20px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.header::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90" opacity=".05">🎮</text></svg>') repeat;
+  background-size: 80px;
+}
+.header h1 {
+  font-size: 2.5em;
+  font-weight: 800;
+  position: relative;
+  text-shadow: 2px 2px 4px rgba(0,0,0,.3);
+  color: #fff;
+}
+.header p { position: relative; opacity: .9; margin-top: 8px; font-size: 1.1em; color: #fff; }
+.progress-bar-container {
+  background: var(--card);
+  padding: 20px 40px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(10px);
+}
+.progress-info { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: .9em; }
+.progress-track {
+  height: 8px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--success));
+  border-radius: 4px;
+  transition: width .5s ease;
+}
+.nav {
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  position: sticky;
+  top: 60px;
+  z-index: 99;
+}
+.nav a {
+  color: var(--text-dim);
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: .8em;
+  border: 1px solid var(--border);
+  transition: all .2s;
+  white-space: nowrap;
+}
+.nav a:hover, .nav a.active {
+  background: var(--accent);
+  color: #000;
+  border-color: var(--accent);
+}
+.container { max-width: 1200px; margin: 0 auto; padding: 30px 20px; }
+.section-title {
+  font-size: 1.5em;
+  font-weight: 700;
+  margin: 40px 0 20px;
+  padding: 15px 20px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #000;
+}
+.section-title .badge {
+  background: rgba(255,255,255,.2);
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: .6em;
+}
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 16px;
+  overflow: hidden;
+  transition: all .2s;
+}
+.card:hover { border-color: var(--accent); transform: translateY(-1px); }
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+}
+.card-header .q-num {
+  background: var(--accent);
+  color: #000;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .8em;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.card-header .q-title { flex: 1; margin-left: 12px; font-weight: 600; }
+.card-header .q-tag {
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: .7em;
+  font-weight: 600;
+}
+.tag-required { background: rgba(225,112,85,.2); color: var(--required); }
+.tag-optional { background: rgba(0,184,148,.2); color: var(--optional); }
+.tag-filled { background: rgba(0,184,148,.3); color: var(--success); }
+.tag-empty { background: rgba(253,203,110,.2); color: var(--warning); }
+.card-body { padding: 20px; }
+.card-body .description {
+  font-size: .85em;
+  color: var(--text-dim);
+  margin-bottom: 12px;
+  padding: 10px;
+  background: rgba(255,255,255,.03);
+  border-radius: 6px;
+  border-left: 3px solid var(--accent);
+}
+.card-body .answer {
+  background: rgba(0,212,170,.08);
+  border: 1px solid rgba(0,212,170,.2);
+  border-radius: 8px;
+  padding: 16px;
+  font-size: .95em;
+  white-space: pre-wrap;
+  position: relative;
+  min-height: 40px;
+}
+.card-body .answer.empty {
+  background: rgba(253,203,110,.05);
+  border-color: rgba(253,203,110,.2);
+  color: var(--text-dim);
+  font-style: italic;
+}
+.copy-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: var(--accent);
+  color: #000;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: .75em;
+  transition: all .2s;
+  opacity: .7;
+}
+.copy-btn:hover { opacity: 1; transform: scale(1.05); }
+.copy-btn.copied { background: var(--success); }
+.select-answer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.select-option {
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  font-size: .85em;
+  cursor: default;
+}
+.select-option.selected {
+  background: var(--accent);
+  color: #000;
+  border-color: var(--accent);
+}
+.doc-section {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+.doc-section-header {
+  padding: 20px;
+  background: linear-gradient(135deg, rgba(0,212,170,.15), rgba(0,245,200,.08));
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.doc-section-header h3 { font-size: 1.2em; }
+.doc-section-body { padding: 24px; }
+.doc-section-body img {
+  max-width: 100%;
+  border-radius: 8px;
+  margin: 16px 0;
+  border: 1px solid var(--border);
+}
+.doc-text {
+  background: rgba(0,212,170,.05);
+  border: 1px solid rgba(0,212,170,.15);
+  border-radius: 8px;
+  padding: 20px;
+  margin: 12px 0;
+  white-space: pre-wrap;
+  position: relative;
+  line-height: 1.8;
+}
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin: 20px 0 40px;
+}
+.stat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+}
+.stat-card .num { font-size: 2em; font-weight: 800; }
+.stat-card .label { font-size: .8em; color: var(--text-dim); margin-top: 4px; }
+.stat-card.total .num { color: var(--accent2); }
+.stat-card.filled .num { color: var(--success); }
+.stat-card.empty-stat .num { color: var(--warning); }
+.stat-card.required .num { color: var(--required); }
+.file-upload-card {
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+  padding: 30px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+.file-upload-card .icon { font-size: 2em; margin-bottom: 10px; }
+.file-upload-card .name { font-weight: 600; margin-bottom: 4px; }
+.file-upload-card .spec { font-size: .8em; color: var(--text-dim); }
+@media(max-width: 768px) {
+  .header h1 { font-size: 1.5em; }
+  .nav { top: 50px; }
+  .container { padding: 15px 10px; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>e-Bridge - 未踏IT 応募管理</h1>
+  <p>2026年度 未踏IT人材発掘・育成事業 応募情報入力フォーム 全回答一覧</p>
+  <p style="font-size:.9em; margin-top:4px; position:relative;">吃音者のためのeスポーツAIコーチング</p>
+</div>
+
+<div class="progress-bar-container">
+  <div class="progress-info">
+    <span id="progress-text">読み込み中...</span>
+    <span id="progress-pct">0%</span>
+  </div>
+  <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+</div>
+
+<nav class="nav" id="nav">
+  <a href="#sec-page1">メールアドレス</a>
+  <a href="#sec-personal1">代表者情報</a>
+  <a href="#sec-member2">メンバー2有無</a>
+  <a href="#sec-personal2">2人目情報</a>
+  <a href="#sec-member3">メンバー3有無</a>
+  <a href="#sec-personal3">3人目情報</a>
+  <a href="#sec-member4">メンバー4有無</a>
+  <a href="#sec-confirm-member">メンバー確認</a>
+  <a href="#sec-project">プロジェクト概要</a>
+  <a href="#sec-confirm-project">プロジェクト確認</a>
+  <a href="#sec-theme2">2件目テーマ</a>
+  <a href="#sec-docs">詳細資料</a>
+  <a href="#sec-file-strategy">ファイル戦略</a>
+</nav>
+
+<div class="container">
+
+<div class="stats" id="stats">
+  <div class="stat-card total"><div class="num" id="stat-total">0</div><div class="label">全質問数</div></div>
+  <div class="stat-card filled"><div class="num" id="stat-filled">0</div><div class="label">入力済み</div></div>
+  <div class="stat-card empty-stat"><div class="num" id="stat-empty">0</div><div class="label">未入力</div></div>
+  <div class="stat-card required"><div class="num" id="stat-req">0</div><div class="label">必須項目</div></div>
+</div>
+
+<div id="form-content"></div>
+
+<!-- 詳細資料セクション -->
+<div id="sec-docs">
+<div class="section-title">📄 提案プロジェクト詳細説明書（ファイル2用）<span class="badge">Word 5-10枚</span></div>
+
+<div class="doc-section">
+  <div class="doc-section-header">
+    <h3>① プロジェクトの背景・課題認識</h3>
+    <button class="copy-btn" onclick="copyDocText(this, 'doc-bg')">コピー</button>
+  </div>
+  <div class="doc-section-body">
+    <div class="doc-text" id="doc-bg">1-1. 背景：100万人の「声なきプレイヤー」たち
+
+日本には約100万人の吃音当事者がいる（日本人口の約1%）。幼児期には約5%が経験するとされ、その多くが成長とともに改善するが、約1%は成人後も吃音が持続する。吃音の当事者は、就職活動の困難、うつ病、社会不安障害を高率で併発し、これは社会の「見えにくい課題」となっている。
+
+発話障害は大きく2種類に分けられる：
+・連発（Repetition）：「ぼ、ぼ、ぼくは」のように同じ音を繰り返す
+・難発（Blocking）：最初の音が詰まって出ない
+
+特に「難発」は外見からはわからず、「なぜ黙っているのか」と誤解されやすい。
+
+1-2. eスポーツとの出会い：「治す」のではなく「活かせる場所」がある
+
+提案者（渡辺柚気）自身が吃音当事者であり、高校でeスポーツ部の部長を務めている。日常生活では「言葉が出ない恐怖」「電話ができない」という現実がある一方、ゲーム（VALORANT）の中では「敵、右！」「カバーして！」など自然と声が出ていることに気づいた。
+
+この体験は、吃音は「治す」ものではなく「活かせる場所」があるという確信につながった。ゲーム内では報告が必要な場面で短い単語で貢献でき、チームメイトも待ってくれる。この「安心できる環境」が発話の成功体験を生み出していた。
+
+1-3. 既存アプローチの限界
+
+現在の吃音支援には構造的な限界がある：
+・言語訓練・発話練習 → 効果に限界があり、根本解決にならない
+・「ゆっくり話しましょう」という配慮 → 当事者にとって根本解決にならない
+・話す機会の回避 → 自己肯定感の低下を招く
+
+本当に必要なのは、訓練ではなく「自然と話したくなる環境」と「安心できる場」である。
+
+1-4. 課題の規模：「声が出ない」eスポーツプレイヤーの現実
+
+ゲーム内では「報告がない」「黙っている」と、チームの邪魔者扱いされてしまう。
+・吃音人口：100万人
+・eスポーツ人口：800万人
+・ボイスチャット不要のコーチングサービス：0件
+
+e-Bridgeは、その最初の1件になる。</div>
+  </div>
+</div>
+
+<div class="doc-section">
+  <div class="doc-section-header">
+    <h3>② 提案プロジェクトの概要・解決策</h3>
+    <button class="copy-btn" onclick="copyDocText(this, 'doc-solution')">コピー</button>
+  </div>
+  <div class="doc-section-body">
+    <div class="doc-text" id="doc-solution">2-1. e-Bridgeの3つの柱
+
+e-Bridgeは、吃音当事者がeスポーツを通じて「話す自信」を取り戻すためのAIコーチングWebアプリケーションである。
+
+【柱1：AIコーチングWebアプリ】
+ゲームスキルを向上させることで自己肯定感をUPさせる。AIが「今の成績」から「目指すべき数値」を具体的に提示し、ゲーム戦略をパーソナライズされたコーチングで提供する。吃音特有の「間（ま）」をAIが待ち、理解する。既存の音声認識ツールは言葉に詰まると認識を停止したり会話が流れたりするが、e-BridgeのAIは急かさないため、安心して落ち着いて戦略を伝えられる。
+
+【柱2：吃音に理解あるコミュニティ】
+言葉が詰まっても、待ってくれる仲間がいる環境を構築する。どもっても大丈夫な安全な空間で、チームプレイを通じてコミュニケーション能力を自然に育む。荒らしや暴言のないクローズドなコミュニティを提供する。
+
+【柱3：段階的コミュニケーション設計】
+最初はテキストのみ。慣れたらボイスへ（無理なく）。「話す訓練」ではなく「話したくなる環境」を作る。
+
+2-2. プログレッションシステム
+
+戦績から目標を自動策定し、段階的に成長を促す：
+・Level 1: Short Call-outs（「敵、右」といった短い報告から開始）
+・Level 5: Tactical Planning（戦術会話への移行）
+・Level 10: Leadership（チームリーダーシップの発揮）
+
+週間コーチングプラン：
+月：コミュニケーション基礎（短文報告）
+火：ターゲットコール練習
+水：エージェントスキル連携
+木：状況把握と共有
+金：実践マッチと振り返り
+
+自分のペースで、段階的にスキルアップできる。
+
+2-3. なぜVALORANTなのか
+
+VALORANTを最初のプラットフォームに選んだ理由は4つ：
+1. 5v5 Team Strategy：チーム戦略の中で、自然とコミュニケーションが生まれる
+2. Short Commands：「敵、右」「2人」— 単語レベルで貢献できる
+3. Hybrid Chat：テキストチャットも併用可能 — 声が出せない時はテキストで参加
+4. Clear IP：利用規約がクリア — 商用利用可能
+
+※VALORANTはRiot Games, Inc.の商標です。本研究は同社との提携・承認関係を示すものではありません。
+
+2-4. 技術的新規性：「安心設計」のAI音声認識
+
+既存の音声認識アプリやチャットツールとの最大の差別化は「待ってくれる環境」があるかどうかである。既存ツールは言葉に詰まると認識を停止したり、会話が流れたりする。e-Bridgeは、吃音特有の間（ま）をAIが待ち、理解する。機能だけでなく、「安心設計」が最大の差別化ポイントである。
+
+AIは個人の話し方のクセを学習する。使えば使うほど、その人専属のパートナーに育っていく。現在は軽度から中度に対応しており、重度の方にはまずテキストチャット機能を提供する。</div>
+  </div>
+</div>
+
+<div class="doc-section">
+  <div class="doc-section-header">
+    <h3>③ 開発の具体的な進め方</h3>
+    <button class="copy-btn" onclick="copyDocText(this, 'doc-dev')">コピー</button>
+  </div>
+  <div class="doc-section-body">
+    <div class="doc-text" id="doc-dev">3-1. MVP（最小限の実証プロダクト）の定義
+
+【MVPに含むもの】
+・Webベースのeスポーツコーチングアプリ（VALORANT特化）
+・吃音対応AI音声認識エンジン（「間」を待つ設計）
+・段階的コミュニケーションシステム（テキスト→ボイスの移行支援）
+・パーソナライズされたコーチングプラン自動生成
+・クローズドコミュニティプラットフォーム（マッチング機能）
+・実証テスト（吃音当事者5名＋eスポーツプレイヤー5名）
+
+【MVPに含まないもの（Phase 2以降）】
+・他ゲームタイトルへの対応（Apex Legends, League of Legends等）
+・B2B向け企業障害者雇用支援機能
+・多言語対応（グローバル展開）
+
+3-2. システム構成
+
+・Frontend (React/Next.js): コーチングUI、ダッシュボード、コミュニティ機能
+・AI Engine (Python/FastAPI): 吃音対応音声認識、ゲーム戦略分析、コーチングプラン生成
+・Data Layer (PostgreSQL/Firebase): ユーザーデータ、プレイ履歴、成長ログ
+・API連携: Riot Games API（VALORANT戦績データ取得）
+
+技術選定の根拠：
+・React/Next.js：Webベースで即座にアクセス可能、インストール不要
+・Python/FastAPI：音声認識AIモデル（Whisper等）との親和性が高い
+・Riot Games API：VALORANT戦績データを公式に取得可能
+
+3-3. 開発スケジュール（2026年7月〜2027年3月）
+
+7月：キックオフ・基盤構築（WebアプリUI基盤、Riot Games API連携）
+8月：AI音声認識エンジンα版（吃音の「間」を認識するカスタムモデル）
+9月：コーチングプラン自動生成（戦績分析→目標設定→週間プラン）
+10月：コミュニティ機能実装（マッチング、テキスト/ボイスチャット）
+11月：プログレッションシステム（Level 1-10の段階的成長設計）
+12月：実証テスト開始（吃音当事者＋eスポーツプレイヤー計10名）
+1月：フィードバック反映・改善（音声認識精度向上、UX改善）
+2月：PoC完了・成果報告（実証データの分析、事業化準備）
+3月：ベータ版公開準備
+
+3-4. 開発体制
+
+代表提案者 / Lead Developer：渡辺 柚気（わたなべ ゆずき）
+  責務：全体設計、AI音声認識エンジン開発、ゲーム戦略分析ロジック設計
+  スキル：吃音当事者としてのドメイン知識、eスポーツ部部長経験、Web開発
+  強み：当事者視点×技術力の融合。「本当に必要な機能」を自分自身の経験から設計できる
+
+PM / メンター：高崎 翔太
+  責務：プロジェクト管理、事業化戦略、技術メンタリング
+  スキル：臨床心理士、Unity/AI開発、起業家ネットワーク（NEXT10優勝、ASHIOTO採択）
+
+3-5. 技術的リスクと対策
+
+・吃音音声の認識精度が不十分（高）→ 当事者データの収集・学習、テキスト入力のフォールバック
+・Riot Games API制限（中）→ データキャッシュ設計、API利用ガイドライン準拠
+・コミュニティの安全性確保（中）→ モデレーション機能、通報システム、クローズド運営</div>
+  </div>
+</div>
+
+<div class="doc-section">
+  <div class="doc-section-header">
+    <h3>④ 提案者の実力・能力を示す実績</h3>
+    <button class="copy-btn" onclick="copyDocText(this, 'doc-track')">コピー</button>
+  </div>
+  <div class="doc-section-body">
+    <div class="doc-text" id="doc-track">4-1. 当事者×開発者の稀有な融合（渡辺柚気）
+
+渡辺柚気は吃音当事者でありながら、eスポーツ部の部長として活動する高校3年生である。
+
+・吃音当事者としての体験知：自身の吃音と向き合い続けた経験から、「本当に必要な機能」を当事者視点で設計できる。既存サービスが見落としている「安心設計」の重要性を体感的に理解している。
+・eスポーツ実践者：VALORANT等のチーム戦略ゲームにおいて、吃音がありながらもチームコミュニケーションを実践。ゲーム内での「自然な発話」の経験をプロダクト設計に直接活用できる。
+・秋田イノベーション・プログラム ASHIOTO 2025採択：e-Bridgeの原型をASHIOTOプログラムで開発・発表。デモデイでのプレゼンテーションで高評価を獲得。
+・PoC（実証実験）の実施：吃音当事者（20代大学生）およびeスポーツ部所属（10代高校生）を対象にした実証実験を完了。「待ってもらえる安心感」「言語化できない攻略を的確に」という具体的なフィードバックを獲得。
+
+4-2. メンター・PM体制（高崎翔太）
+
+・臨床心理士として500人以上の知能検査（WAIS/WISC）実施実績
+・Unity/AI開発による高度なシステム開発能力
+・起業家ネットワーク：EO North Japan「NEXT10」優勝、秋田若者チャレンジ採択、ASHIOTO採択
+・2025年度未踏IT人材発掘・育成事業採択（if(塾)、Kitazuna）
+・if(塾)：発達特性のある生徒30名を対象とした学習塾を運営。検証フィールドとして活用可能
+
+4-3. PoC（実証実験）での反響
+
+吃音当事者（20代大学生）の声：
+「報告への焦りから言葉が詰まることがありましたが、AIは急かさないため、安心して落ち着いて戦略を伝えられました。」
+
+eスポーツ部所属（10代高校生）の声：
+「感覚的なプレイを言語化し、的確な攻略法を教えてくれました。人間相手だと遠慮してしまう反復練習も、AIなら気兼ねなく何度でも没頭できます。」</div>
+  </div>
+</div>
+
+<div class="doc-section">
+  <div class="doc-section-header">
+    <h3>⑤ 事業化・社会実装の新規性・優位性、想定するターゲットと規模</h3>
+    <button class="copy-btn" onclick="copyDocText(this, 'doc-market')">コピー</button>
+  </div>
+  <div class="doc-section-body">
+    <div class="doc-text" id="doc-market">5-1. 競合分析と差別化
+
+・既存のeスポーツコーチングサービス：aim.gg、Metafy等 → 健常者向け。吃音・発話障害への配慮なし。ボイスチャット前提の設計。
+・音声認識アプリ（Google Speech-to-Text等）：汎用音声認識 → 吃音の「間」で認識停止。当事者に不安を与える設計。
+・吃音支援アプリ（DAF/SpeakEasy等）：発話訓練に特化 → 「治す」アプローチ。自然な発話環境の提供なし。
+・言語聴覚士（ST）による訓練：専門家による個別支援 → 高コスト、スケーラビリティに限界。ゲームを活用したアプローチなし。
+
+e-Bridgeの独自ポジション：
+「吃音×eスポーツ×AI」の三位一体は世界初。訓練ではなく「自然と話したくなる環境」を技術で実装する。
+
+5-2. 参入障壁
+
+1. 当事者知見：開発者自身が吃音当事者であり、「本当に必要な安心設計」を体感的に理解している
+2. PoCデータ：実証実験による具体的なフィードバックとデータの蓄積
+3. コミュニティの信頼：当事者コミュニティとの信頼関係（吃音を「隠さなくていい」空間の構築）
+4. メンター体制：臨床心理士・未踏採択者によるバックアップ
+
+5-3. 想定するターゲットと市場規模
+
+TAM（獲得可能な最大市場）：
+・日本のeスポーツ市場：約800億円（2025年推計）
+・吃音関連支援市場：潜在的に数百億円規模
+・障害者雇用支援市場：約1兆円規模
+
+SAM（実際にアプローチ可能な市場）：
+・吃音人口100万人 × eスポーツ普及率 → 数万人の潜在顧客
+・eスポーツ人口800万人のうちコミュニケーション課題を感じている層
+・年間市場規模：約50億円
+
+SOM（短期的に獲得を目指す市場）：
+・初期ターゲット：吃音当事者のeスポーツプレイヤー（10代〜20代）
+・初年度目標ユーザー数：1,000名（基本無料 + プレミアム課金）
+・初年度売上目標：500万円（プレミアム月額980円 × 500名 × 10ヶ月）
+
+5-4. 壮大なビジョン：「声のバリアフリー」の実現
+
+e-Bridgeは単なるeスポーツコーチングアプリではない。最終的には「声が出なくても、社会で活躍できる」世界を実現するプラットフォームとなる。
+
+・Phase 1（eスポーツ）：ゲーム内で「話す自信」を取り戻す → 発話の成功体験を積む
+・Phase 2（就職支援）：ゲームで培ったコミュニケーション能力を就職活動に活用 → 企業の障害者雇用支援との連携
+・Phase 3（社会実装）：「吃音があっても戦える社会」の実現 → 音声AIによるリアルタイム支援を日常生活に展開
+・Phase 4（グローバル展開）：世界7,000万人の吃音当事者へ → 言語を超えた「声のバリアフリー」プラットフォーム
+
+吃音は日本だけの問題ではない。世界人口の約1%、およそ7,000万人が吃音を抱えている。e-Bridgeの「安心設計AI」と「段階的コミュニケーション」のアプローチは、言語や文化を超えて適用可能である。eスポーツという世界共通のフィールドを起点に、「声のバリアフリー」を世界に広げる。</div>
+  </div>
+</div>
+
+<div class="doc-section">
+  <div class="doc-section-header">
+    <h3>⑥ 事業化・社会実装の具体的な進め方</h3>
+    <button class="copy-btn" onclick="copyDocText(this, 'doc-biz')">コピー</button>
+  </div>
+  <div class="doc-section-body">
+    <div class="doc-text" id="doc-biz">6-1. ビジネスモデル
+
+B2C（Personal）：
+・基本無料 / プレミアム月額980円（安心を買う・自信を買う）
+・プレミアム機能：より高度な戦術AIコーチング、ランクアップ最短ルート提案、安全が担保されたクローズドコミュニティへの参加権（荒らしや暴言のない環境）
+
+B2B（Partnerships）：
+・言語聴覚士（ST）との連携：e-Bridgeを補助ツールとして活用
+・吃音支援団体との協業：「ことばの教室」等との連携による集客
+・企業の障害者雇用支援：ゲーム攻略情報としての発信で「吃音」という言葉を使わず、「コミュ障でも勝てるVALORANT講座」として入り口を作る
+
+6-2. 集客戦略
+
+当事者は障害を隠したがる傾向がある。そのため、2つのルートで集客する：
+1. 専門家ルート：言語聴覚士や「ことばの教室」との連携 → 専門家からの紹介
+2. ゲームルート：ゲーム攻略情報としての発信 → 「吃音」という言葉を使わず、「コミュ障でも勝てるVALORANT講座」として入り口を作る
+
+6-3. ロードマップ
+
+Phase 1（事業期間中 8ヶ月）：MVP開発・実証テスト完了、最初のユーザー獲得
+Phase 2（事業終了後1年目）：正式ローンチ、1,000名ユーザー獲得、ST・支援団体との連携開始
+Phase 3（2年目以降）：他ゲームタイトル対応、B2B展開本格化、海外展開準備</div>
+  </div>
+</div>
+
+<div class="doc-section">
+  <div class="doc-section-header">
+    <h3>⑦ 事業期間終了後の事業化・社会実装に関する計画</h3>
+    <button class="copy-btn" onclick="copyDocText(this, 'doc-post')">コピー</button>
+  </div>
+  <div class="doc-section-body">
+    <div class="doc-text" id="doc-post">7-1. 法人化計画
+
+事業期間終了後に法人化を検討する。
+・設立時期：2027年度中（大学進学後、事業が軌道に乗り次第）
+・設立形態：合同会社（初期コスト抑制）→ 株式会社（資金調達時に組織変更）
+・初期メンバー：渡辺柚気（代表/CTO）、高崎翔太（アドバイザー/技術顧問）
+
+7-2. 人員計画
+
+・事業期間中：1〜2名（渡辺 + サポートメンバー）
+・1年目：3名（エンジニア1名・コミュニティマネージャー1名を追加）
+・2年目：5名（エンジニア1名・マーケティング1名を追加）
+
+7-3. 売上計画
+
+・事業期間中：0円（無料テスト版での実証に集中）
+・1年目：500万円（プレミアム会員500名 × 月額980円 × 10ヶ月）
+・2年目：2,000万円（プレミアム2,000名 + B2B連携開始）
+・3年目：5,000万円（ユーザー5,000名 + B2B本格化 + 他ゲーム展開）
+・5年目：3億円（グローバル展開 + 企業連携 + 音声AI技術のライセンス）
+
+7-4. 資金調達計画
+
+・事業期間中：未踏IT人材発掘・育成事業費（230万円上限）
+・1年目：エンジェル投資家・起業家支援プログラム 500〜1,000万円
+・2年目：シードVC 3,000〜5,000万円
+・3年目以降：シリーズA 1〜2億円（グローバル展開資金）
+
+7-5. 社会的インパクトの展望
+
+e-Bridgeが目指す最終的なビジョンは、「吃音があっても、声が出なくても、社会で自分らしく活躍できる世界」の実現である。
+
+ゲームでの成功体験 → 日常での自信 → 就職活動・社会参加への橋渡し
+
+この「架け橋（Bridge）」としての機能が、eスポーツを超えて社会全体の「声のバリアフリー」につながる。100万人の当事者、そして世界7,000万人の吃音者に「どもっても、伝えたい」という想いを届ける。</div>
+  </div>
+</div>
+
+<div class="doc-section">
+  <div class="doc-section-header">
+    <h3>⑧ 予算内訳</h3>
+    <button class="copy-btn" onclick="copyDocText(this, 'doc-budget')">コピー</button>
+  </div>
+  <div class="doc-section-body">
+    <div class="doc-text" id="doc-budget">8-1. 稼働計画と費用
+
+※未踏IT人材発掘・育成事業の予算上限に準拠
+事業期間：2026年7月〜2027年3月（9ヶ月間）
+
+・渡辺 柚気（代表提案者 / Lead Developer）：
+  担当：全体設計、AIエンジン開発、フロントエンド開発、実証テスト
+  稼働：月80〜100時間 × 9ヶ月
+
+（具体的な金額は未踏IT事業の規定に従い調整）
+
+8-2. 稼働内容の内訳
+
+【渡辺 柚気】
+・AI音声認識エンジン開発（吃音対応カスタマイズ）：200時間
+・Webアプリ開発（React/Next.js）：200時間
+・コーチングプラン自動生成ロジック：100時間
+・コミュニティ機能開発：80時間
+・Riot Games API連携：60時間
+・実証テスト・データ分析：80時間
+・プロジェクト管理：80時間
+
+8-3. 必要な開発環境・ツール
+
+・クラウドサーバー（AWS/GCP）：AI推論用GPU含む
+・Riot Games API利用（無料枠内）
+・開発ツール（VSCode, GitHub等：無料）
+・UI/UXデザインツール（Figma：無料枠）</div>
+  </div>
+</div>
+
+<div class="doc-section">
+  <div class="doc-section-header">
+    <h3>⑨ 未踏性・独創性</h3>
+    <button class="copy-btn" onclick="copyDocText(this, 'doc-novel')">コピー</button>
+  </div>
+  <div class="doc-section-body">
+    <div class="doc-text" id="doc-novel">9-1. 「治す」から「活かす」へのパラダイムシフト
+
+従来の吃音支援は「発話を矯正する」ことが前提であった。e-Bridgeは「吃音のままで活躍できる環境を技術で構築する」という根本的に異なるアプローチを取る。これは障害の「医学モデル」から「社会モデル」への転換そのものであり、技術開発としても社会実装としても未踏である。
+
+9-2. 吃音対応AI音声認識の技術的新規性
+
+既存の音声認識システムは「流暢な発話」を前提に設計されている。e-Bridgeが開発する音声認識エンジンは：
+・連発（繰り返し）を単一の入力として正しく認識
+・難発（ブロッキング）の沈黙を「処理中」と判定し、タイムアウトしない
+・個人の発話パターンを学習し、認識精度を使うほど向上
+・ゲーム内コマンド（短い報告）に特化した軽量モデル
+
+9-3. eスポーツ×障害支援の完全な空白地帯
+
+「ボイスチャット不要のeスポーツコーチング」は市場にゼロ件。eスポーツ産業が急成長する中、発話障害を持つプレイヤーは完全に取り残されている。e-Bridgeはこの空白地帯に世界で初めて参入する。
+
+9-4. 社会的インパクトの大きさ
+
+成功すれば、以下の波及効果が期待される：
+・吃音当事者100万人の自己肯定感向上と社会参加促進
+・eスポーツの「アクセシビリティ」という新概念の確立
+・障害者のIT人材としての可能性の実証
+・「声のバリアフリー」技術の他分野への応用（遠隔医療、オンライン教育等）
+・世界7,000万人の吃音当事者への展開可能性</div>
+  </div>
+</div>
+
+</div><!-- sec-docs -->
+
+<!-- ファイル提出戦略セクション -->
+<div id="sec-file-strategy">
+
+<div class="section-title">📦 ファイル提出戦略<span class="badge">提出ファイル</span></div>
+
+<div class="doc-section">
+  <div class="doc-section-header">
+    <h3>提出ファイル一覧と準備状況</h3>
+  </div>
+  <div class="doc-section-body">
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:16px;">
+      <div style="background:rgba(0,184,148,.1); border:1px solid rgba(0,184,148,.3); border-radius:12px; padding:20px;">
+        <div style="font-size:1.5em; margin-bottom:8px;">📜</div>
+        <div style="font-weight:700; margin-bottom:4px;">ファイル1：誓約書</div>
+        <div style="font-size:.85em; color:var(--text-dim);">必須 / 10MB以下</div>
+        <div style="margin-top:8px; color:var(--warning); font-size:.85em;">公式サイトからDL → 記入 → PDF</div>
+      </div>
+      <div style="background:rgba(0,184,148,.1); border:1px solid rgba(0,184,148,.3); border-radius:12px; padding:20px;">
+        <div style="font-size:1.5em; margin-bottom:8px;">📄</div>
+        <div style="font-weight:700; margin-bottom:4px;">ファイル2：提案プロジェクト詳細説明書</div>
+        <div style="font-size:.85em; color:var(--text-dim);">必須 / PDF / 10MB以下 / 5〜10ページ</div>
+        <div style="margin-top:8px; color:var(--warning); font-size:.85em;">全セクション準備中</div>
+      </div>
+      <div style="background:rgba(0,212,170,.1); border:1px solid rgba(0,212,170,.3); border-radius:12px; padding:20px;">
+        <div style="font-size:1.5em; margin-bottom:8px;">🎬</div>
+        <div style="font-weight:700; margin-bottom:4px;">ファイル3：自己紹介ビデオ</div>
+        <div style="font-size:.85em; color:var(--text-dim);">任意 / 動画 / 30MB以下 / 1分以内</div>
+        <div style="margin-top:8px; color:var(--accent2); font-size:.85em;">加点チャンス！</div>
+      </div>
+      <div style="background:rgba(0,212,170,.1); border:1px solid rgba(0,212,170,.3); border-radius:12px; padding:20px;">
+        <div style="font-size:1.5em; margin-bottom:8px;">📎</div>
+        <div style="font-weight:700; margin-bottom:4px;">ファイル4：参考資料</div>
+        <div style="font-size:.85em; color:var(--text-dim);">任意 / 自由書式 / 30MB以下</div>
+        <div style="margin-top:8px; color:var(--accent2); font-size:.85em;">加点チャンス！</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- sec-file-strategy -->
+
+</div><!-- container -->
+
+<script>
+const formData = [
+  // Page 1: メールアドレス
+  {
+    section: "sec-page1",
+    title: "メールアドレス",
+    page: "1/12",
+    items: [
+      { num:1, q:"メールアドレス", req:true, type:"text", answer:"", desc:"エントリーに使用したご自身の電子メールアドレスを入力してください。エントリー時と異なるメールアドレスを入力・送信した場合、あるいはエントリー時とは別のメンバーの方による入力・送信の場合は、送信された内容を無効と判断する場合があります。" }
+    ]
+  },
+  // Page 2: 代表者の個人情報
+  {
+    section: "sec-personal1",
+    title: "代表者の個人情報",
+    page: "2/12",
+    items: [
+      { num:2, q:"姓（Family Name）を記入してください。", req:true, type:"text", answer:"渡辺", desc:"エントリーで登録した方を代表者として記入してください。氏名は住民登録の記載通りに記入をしてください。ただし、旧字・異体字の漢字については正字での記入で問題ありません。" },
+      { num:3, q:"名（First Name）を記入してください。", req:true, type:"text", answer:"柚気" },
+      { num:4, q:"ミドルネームがあれば記入してください。", req:false, type:"text", answer:"" },
+      { num:5, q:"姓（Family Name）のフリガナを記入してください。", req:true, type:"text", answer:"ワタナベ" },
+      { num:6, q:"名（First Name）のフリガナを記入してください。", req:true, type:"text", answer:"ユズキ" },
+      { num:7, q:"ミドルネームがあればそのフリガナを記入してください。", req:false, type:"text", answer:"" },
+      { num:8, q:"生年月日を入力してください。", req:true, type:"text", answer:"", desc:"日付形式で入力してください。" },
+      { num:9, q:"所属・在籍組織名（会社名・学校名等）を記入してください。", req:true, type:"text", answer:"", desc:"所属・在籍組織がない場合は「フリーランス」と記入してください。所属・在籍組織が複数ある場合はコンマ（,）で区切って記入してください。学部・大学院がある大学の大学院に在籍している場合は「○○大学大学院」とは記入せずに「○○大学」と記入してください。" },
+      { num:10, q:"所属する組織の部署・役職、在籍する学校の学部・学科・学年を記入してください。", req:true, type:"text", answer:"", desc:"フリーランスの場合、部署・役職がない場合は「なし」と記入してください。所属・在籍組織が複数ある場合はコンマ（,）で区切って、所属・在籍組織名から記入してください。学部・大学院がある大学の大学院に在籍している場合は「大学院○○研究科 △△専攻」「○○学術院△△学府」のように「大学院」「○○院」から記入をしてください。" },
+      { num:11, q:"郵便物の郵送先の郵便番号を記入してください。", req:true, type:"text", answer:"", desc:"半角数字で記入してください。ハイフンは必須ではありません。" },
+      { num:12, q:"郵便物の郵送先の住所を記入してください。", req:true, type:"text", answer:"" },
+      { num:13, q:"追加の連絡先メールアドレスがあれば記入してください。", req:false, type:"text", answer:"" },
+      { num:14, q:"連絡先電話番号を記入してください。", req:true, type:"text", answer:"", desc:"電子メールで連絡が取れない場合等で使用します。携帯電話など、日中に連絡可能な電話番号を記入してください。国際電話は、特定の通話アプリでしか通話ができない番号や+81のフォーマットは対応できません。固定電話番号は必須ではないため、国内の携帯電話番号のみ記入でも問題ありません。半角ハイフン・半角英語が使用可能です。" },
+      { num:15, q:"過去に未踏IT人材発掘・育成事業に採択されている場合は採択年度を選択してください。", req:false, type:"select", options:["選択"], answer:"", desc:"過去に未踏IT人材発掘・育成事業に採択されている場合は採択年度を選択してください。" },
+      { num:16, q:"過去に未踏IT人材発掘・育成事業に採択されている場合は採択プロジェクト名を記入してください。", req:false, type:"text", answer:"" },
+      { num:17, q:"過去に未踏ジュニア、あるいは、AKATSUKIプロジェクトで採択されている場合は、採択年度、採択事業名、採択プロジェクト名を記入してください。", req:false, type:"text", answer:"", desc:"AKATSUKIプロジェクトで採択されている場合の記載方法は、「推進プログラム」、「福岡未踏」、「熊本版未踏的プロジェクトIPPO」のように、どのAKATSUKI的事業に採択されたのかが分かるように記述してください。" },
+      { num:18, q:"消費税課税事業者の区分を選択してください。", req:true, type:"select", options:["免税事業者","既に課税事業者である","2026年度中に課税事業者になる予定"], answer:"", desc:"課税期間（個人事業者は暦年、法人は事業年度）の基準期間（個人事業者は前々年、法人は前々事業年度）における課税売上高が1,000万円を超える事業者、あるいは適格請求書発行事業者登録を行っている事業者（インボイス登録事業者）が課税事業者に該当します。" },
+      { num:19, q:"略歴（学歴、職歴など）を記入してください。", req:true, type:"text", answer:"", desc:"略歴（学歴、職歴など）を記入してください。" }
+    ]
+  },
+  // Page 3: 代表者以外のメンバー有無
+  {
+    section: "sec-member2",
+    title: "応募テーマ（1件目）のメンバーに関する情報",
+    page: "3/12",
+    items: [
+      { num:20, q:"代表者以外のメンバーはいますか？", req:true, type:"select", options:["いる","いない"], answer:"", desc:"応募テーマ（1件目）のメンバーに関する情報を入力してください。" }
+    ]
+  },
+  // Page 4: 2人目のメンバーの個人情報
+  {
+    section: "sec-personal2",
+    title: "2人目のメンバーの個人情報",
+    page: "4/12",
+    items: [
+      { num:21, q:"姓（Family Name）を記入してください。", req:true, type:"text", answer:"", desc:"氏名は住民登録の記載通りに記入をしてください。ただし、旧字・異体字の漢字については正字での記入で問題ありません。" },
+      { num:22, q:"名（First Name）を記入してください。", req:true, type:"text", answer:"" },
+      { num:23, q:"ミドルネームがあれば記入してください。", req:false, type:"text", answer:"" },
+      { num:24, q:"姓（Family Name）のフリガナを記入してください。", req:true, type:"text", answer:"" },
+      { num:25, q:"名（First Name）のフリガナを記入してください。", req:true, type:"text", answer:"" },
+      { num:26, q:"ミドルネームがあればそのフリガナを記入してください。", req:false, type:"text", answer:"" },
+      { num:27, q:"生年月日を入力してください。", req:true, type:"text", answer:"" },
+      { num:28, q:"所属・在籍組織名（会社名・学校名等）を記入してください。", req:true, type:"text", answer:"", desc:"所属・在籍組織がない場合は「フリーランス」と記入してください。所属・在籍組織が複数ある場合はコンマ（,）で区切って記入してください。" },
+      { num:29, q:"所属する組織の部署・役職、在籍する学校の学部・学科・学年を記入してください。", req:true, type:"text", answer:"", desc:"フリーランスの場合、部署・役職がない場合は「なし」と記入してください。" },
+      { num:30, q:"過去に未踏IT人材発掘・育成事業に採択されている場合は採択年度を選択してください。", req:false, type:"select", options:["選択"], answer:"" },
+      { num:31, q:"過去に未踏IT人材発掘・育成事業に採択されている場合は採択プロジェクト名を記入してください。", req:false, type:"text", answer:"" },
+      { num:32, q:"過去に未踏ジュニア、あるいは、AKATSUKIプロジェクトで採択されている場合は、採択年度、採択事業名、採択プロジェクト名を記入してください。", req:false, type:"text", answer:"" },
+      { num:33, q:"消費税課税事業者の区分を選択してください。", req:true, type:"select", options:["免税事業者","既に課税事業者である","2026年度中に課税事業者になる予定"], answer:"" },
+      { num:34, q:"略歴（学歴、職歴など）を記入してください。", req:true, type:"text", answer:"" }
+    ]
+  },
+  // Page 5: 3人目のメンバー有無
+  {
+    section: "sec-member3",
+    title: "3人目のメンバー確認",
+    page: "5/12",
+    items: [
+      { num:35, q:"3人目のメンバーはいますか？", req:true, type:"select", options:["いる","いない"], answer:"いる" }
+    ]
+  },
+  // Page 6: 3人目のメンバーの個人情報
+  {
+    section: "sec-personal3",
+    title: "3人目のメンバーの個人情報",
+    page: "6/12",
+    items: [
+      { num:36, q:"姓（Family Name）を記入してください。", req:true, type:"text", answer:"", desc:"氏名は住民登録の記載通りに記入をしてください。" },
+      { num:37, q:"名（First Name）を記入してください。", req:true, type:"text", answer:"" },
+      { num:38, q:"ミドルネームがあれば記入してください。", req:false, type:"text", answer:"" },
+      { num:39, q:"姓（Family Name）のフリガナを記入してください。", req:true, type:"text", answer:"" },
+      { num:40, q:"名（First Name）のフリガナを記入してください。", req:true, type:"text", answer:"" },
+      { num:41, q:"ミドルネームがあればそのフリガナを記入してください。", req:false, type:"text", answer:"" },
+      { num:42, q:"生年月日を入力してください。", req:true, type:"text", answer:"" },
+      { num:43, q:"所属・在籍組織名（会社名・学校名等）を記入してください。", req:true, type:"text", answer:"" },
+      { num:44, q:"所属する組織の部署・役職、在籍する学校の学部・学科・学年を記入してください。", req:true, type:"text", answer:"" },
+      { num:45, q:"過去に未踏IT人材発掘・育成事業に採択されている場合は採択年度を選択してください。", req:false, type:"select", options:["選択"], answer:"" },
+      { num:46, q:"過去に未踏IT人材発掘・育成事業に採択されている場合は採択プロジェクト名を記入してください。", req:false, type:"text", answer:"" },
+      { num:47, q:"過去に未踏ジュニア、あるいは、AKATSUKIプロジェクトで採択されている場合は、採択年度、採択事業名、採択プロジェクト名を記入してください。", req:false, type:"text", answer:"" },
+      { num:48, q:"消費税課税事業者の区分を選択してください。", req:true, type:"select", options:["免税事業者","既に課税事業者である","2026年度中に課税事業者になる予定"], answer:"" },
+      { num:49, q:"略歴（学歴、職歴など）を記入してください。", req:true, type:"text", answer:"" }
+    ]
+  },
+  // Page 7: 4人目のメンバー有無
+  {
+    section: "sec-member4",
+    title: "4人目のメンバー確認",
+    page: "7/12",
+    items: [
+      { num:50, q:"4人目のメンバーはいますか？", req:true, type:"select", options:["いる","いない"], answer:"いない" }
+    ]
+  },
+  // Page 8: メンバーに関する確認事項
+  {
+    section: "sec-confirm-member",
+    title: "応募テーマ（1件目）のメンバーに関する確認事項",
+    page: "8/12",
+    items: [
+      { num:51, q:"これまでに未踏IT人材発掘・育成事業、未踏アドバンスト事業、未踏ターゲット事業に採択されたことはありますか？", req:true, type:"select", options:["ある","ない"], answer:"", desc:"メンバー全員を対象として回答してください。" },
+      { num:52, q:"上で未踏IT人材発掘・育成事業、未踏アドバンスト事業、未踏ターゲット事業に採択されたことがあると回答した場合は、その採択年度・採択プロジェクト名を記入してください。", req:false, type:"text", answer:"" },
+      { num:53, q:"メンバーはこれまでにIPAと何らかの関わり合いを持ったことはありますか？", req:true, type:"select", options:["ある","ない"], answer:"", desc:"委員会の委員、セキュリティ・キャンプの講師・受講者など" },
+      { num:54, q:"上でメンバーがこれまでにIPAと何らかの関わり合いを持ったことはあると回答した場合は、その詳細を記入してください。", req:false, type:"text", answer:"" },
+      { num:55, q:"メンバーはPMとの密接な関係にありますか？", req:true, type:"select", options:["ある","ない"], answer:"" },
+      { num:56, q:"上でメンバーがPMと密接な関係にあると回答した場合は、その詳細を記入してください。", req:false, type:"text", answer:"" },
+      { num:57, q:"メンバーの所属・在籍組織（学校を含みます）は本事業への応募を了解していますか？", req:true, type:"select", options:["はい","いいえ"], answer:"" },
+      { num:58, q:"上で所属・在籍組織からの了解を得ていないと回答した場合は、その理由を記入してください。", req:false, type:"text", answer:"" },
+      { num:59, q:"就職、転職、留学（日本での留学終了を含む）等のため、プロジェクト期間中に所属・在籍組織（学校を含みます）が変化する予定のメンバーはいますか？", req:true, type:"select", options:["いる","いない"], answer:"" },
+      { num:60, q:"上でプロジェクト期間中に所属・在籍組織が変化するメンバーがいると回答した場合は、その詳細（変更時期・変更組織名等）を記入してください。", req:false, type:"text", answer:"" },
+      { num:61, q:"メンバーに外国籍の方が含まれますか？", req:true, type:"select", options:["はい","いいえ"], answer:"" },
+      { num:62, q:"上でメンバーに外国籍の方が含まれると回答した場合は、そのメンバーの在留資格種類、就労可能期限、資格外活動許可の有無・許認期間等の情報を記入してください。", req:false, type:"text", answer:"" },
+      { num:63, q:"メンバーに未成年の方が含まれますか？", req:true, type:"select", options:["はい","いいえ"], answer:"" },
+      { num:64, q:"上でメンバーに未成年の方が含まれると回答した方に伺います。本事業への応募について、そのメンバーの保護者（父母もしくは同等の親族等）の方に了解をとっていますか？", req:false, type:"select", options:["はい","いいえ"], answer:"" },
+      { num:65, q:"上で未成年のメンバーの保護者から了解を取っていないと回答した場合は、その理由を記入してください。", req:false, type:"text", answer:"" },
+      { num:66, q:"メンバーに関する補足情報があれば記入してください。", req:false, type:"text", answer:"" }
+    ]
+  },
+  // Page 9: プロジェクトの申請金額と概要
+  {
+    section: "sec-project",
+    title: "応募テーマ（1件目）の申請金額とプロジェクトの概要",
+    page: "9/12",
+    items: [
+      { num:67, q:"プロジェクトのタイトルを記入してください。", req:true, type:"text", answer:"", desc:"絵文字は使用しないでください。" },
+      { num:68, q:"申請金額を記入してください。", req:true, type:"text", answer:"", desc:"申請金額は必要経費の金額ではありません。時間単価×作業時間で計算される金額です。メンバーに課税事業者が含まれる場合は、そのメンバーの時間単価には消費税を反映して計算をしてください。" },
+      { num:69, q:"プロジェクトの概要を400字から800字程度にまとめて記入してください。", req:true, type:"text", answer:"", desc:"「プロジェクト詳細説明書」の記載内容の中で、重要なポイントを中心に全体の概要を簡潔にまとめてください。絵文字は使用しないでください。" },
+      { num:70, q:"プロジェクトが依存する知的財産権の権利情報を全て記入してください。", req:false, type:"text", answer:"", desc:"ご自身や第三者（応募者の所属先を含みます）が保有する知的財産権（特に特許権）に依存した開発を行う場合は、必ずその詳細を記入してください。利用する開発環境やツールに関する知的財産権の情報の記入は不要です。" }
+    ]
+  },
+  // Page 10: プロジェクトに関する確認事項
+  {
+    section: "sec-confirm-project",
+    title: "応募テーマ（1件目）のプロジェクトに関する確認事項",
+    page: "10/12",
+    items: [
+      { num:71, q:"IPAまたはIPA以外の公的機関等から、研究開発支援に関わる助成を2024年4月以降に受けたことはありますか？または現在受けていますか？", req:true, type:"select", options:["2024年4月以降に受けたことがある","現在受けている","受けたことはない"], answer:"" },
+      { num:72, q:"上で2024年4月以降に公的機関から助成を受けていた・受けていると回答した場合は、その詳細を記入してください。", req:false, type:"text", answer:"", desc:"競争的外部資金に該当する場合は、代表・分担区分・期間（開始年度～終了年度）、金額（各年度または総額）も併せて記入してください。" },
+      { num:73, q:"他の機関や事業に同様のプロジェクトで重複申請をしていますか？または申請予定ですか？", req:true, type:"select", options:["はい","いいえ"], answer:"", desc:"在籍する学校内で実施しているファンドや未踏アドバンスト事業への併願も含みます。" },
+      { num:74, q:"上で他の機関や事業での重複申請をしている・すると回答した場合は、その事業の詳細と、当プロジェクトとの重複部分・関係性を記入してください。", req:false, type:"text", answer:"" },
+      { num:75, q:"公募要領の18頁「8. その他 (6)」に記載されている確認書の内容について同意をしますか？", req:true, type:"select", options:["はい","いいえ"], answer:"" },
+      { num:76, q:"上で確認書の内容に同意しないと回答した場合は、その理由を記入してください。", req:false, type:"text", answer:"" },
+      { num:77, q:"当該プロジェクトを通して、日本のIT関連産業の発展に寄与する意欲がありますか？", req:true, type:"select", options:["ある","ない"], answer:"" },
+      { num:78, q:"上で日本のIT関連産業の発展に寄与する意欲があると回答をした場合は、どのようにして寄与をするか、現段階で考えていることを記入してください。意欲がないと回答した場合は、その理由を記入してください。", req:true, type:"text", answer:"" },
+      { num:79, q:"当該プロジェクトについて補足情報があれば記入してください。", req:false, type:"text", answer:"" }
+    ]
+  },
+  // Page 11: 2件目の応募テーマ
+  {
+    section: "sec-theme2",
+    title: "2件目の応募テーマ",
+    page: "11/12",
+    items: [
+      { num:80, q:"2件目の応募テーマはありますか？", req:true, type:"select", options:["ある","ない"], answer:"ない", desc:"2件まで異なるテーマを応募することができます。メンバー構成を変更することも可能です。ただし代表者は必ずメンバーに含まれている必要があります。" }
+    ]
+  }
+];
+
+function renderForm() {
+  const container = document.getElementById('form-content');
+  let html = '';
+
+  formData.forEach(section => {
+    html += `<div id="${section.section}">`;
+    html += `<div class="section-title">📋 ${section.title} <span class="badge">p.${section.page}</span></div>`;
+
+    section.items.forEach(item => {
+      const hasAnswer = item.answer && item.answer.trim() !== '';
+      const reqTag = item.req
+        ? '<span class="q-tag tag-required">必須</span>'
+        : '<span class="q-tag tag-optional">任意</span>';
+      const statusTag = hasAnswer
+        ? '<span class="q-tag tag-filled" style="margin-left:6px">入力済</span>'
+        : '<span class="q-tag tag-empty" style="margin-left:6px">未入力</span>';
+
+      html += `<div class="card" id="q-${item.num}">`;
+      html += `<div class="card-header">`;
+      html += `<span class="q-num">${item.num}</span>`;
+      html += `<span class="q-title">${item.q}</span>`;
+      html += `<div>${reqTag}${statusTag}</div>`;
+      html += `</div>`;
+      html += `<div class="card-body">`;
+
+      if (item.desc) {
+        html += `<div class="description">${item.desc}</div>`;
+      }
+
+      if (item.type === 'select' || item.type === 'check') {
+        html += `<div class="select-answer">`;
+        (item.options || []).forEach(opt => {
+          const sel = item.answer === opt ? 'selected' : '';
+          html += `<span class="select-option ${sel}">${opt}</span>`;
+        });
+        html += `</div>`;
+        if (hasAnswer) {
+          html += `<div class="answer" style="margin-top:12px">${item.answer}<button class="copy-btn" onclick="copyText(this)">コピー</button></div>`;
+        }
+      } else if (item.type === 'file') {
+        html += `<div class="file-upload-card">`;
+        html += `<div class="icon">📎</div>`;
+        html += `<div class="name">${item.q}</div>`;
+        html += `<div class="spec">${item.desc || ''}</div>`;
+        html += `<div style="margin-top:10px; color:var(--warning); font-size:.85em">${hasAnswer ? '✅ 準備済み' : '⚠️ 未準備'}</div>`;
+        html += `</div>`;
+      } else {
+        const cls = hasAnswer ? '' : 'empty';
+        const display = hasAnswer ? item.answer : '（未入力）';
+        html += `<div class="answer ${cls}">${display}${hasAnswer ? '<button class="copy-btn" onclick="copyText(this)">コピー</button>' : ''}</div>`;
+      }
+
+      html += `</div></div>`;
+    });
+
+    html += `</div>`;
+  });
+
+  container.innerHTML = html;
+  updateStats();
+}
+
+function updateStats() {
+  let total = 0, filled = 0, reqCount = 0;
+  formData.forEach(s => s.items.forEach(item => {
+    total++;
+    if (item.req) reqCount++;
+    if (item.answer && item.answer.trim() !== '') filled++;
+  }));
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-filled').textContent = filled;
+  document.getElementById('stat-empty').textContent = total - filled;
+  document.getElementById('stat-req').textContent = reqCount;
+
+  const pct = Math.round((filled / total) * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = `入力済み: ${filled} / ${total}`;
+  document.getElementById('progress-pct').textContent = pct + '%';
+}
+
+function copyText(btn) {
+  const text = btn.parentElement.textContent.replace('コピー', '').replace('コピー済み!', '').trim();
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'コピー済み!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'コピー'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+function copyDocText(btn, id) {
+  const text = document.getElementById(id).textContent.trim();
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'コピー済み!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'コピー'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+// Smooth scroll for nav
+document.querySelectorAll('.nav a').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+
+renderForm();
+</script>
+</body>
+</html>
